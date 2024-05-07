@@ -20,7 +20,12 @@ public class Issue {
     @Column(nullable = false, length = 10)
     private IssueStatus status;
 
+    @Column(nullable = false, length = 300)
     private String title;
+
+    @Lob
+    @Column(nullable = false)
+    private String description;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
