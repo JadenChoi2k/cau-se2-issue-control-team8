@@ -1,12 +1,27 @@
 package org.cause2.team8.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
 public enum UserRole {
-    USER(1), ADMIN(2);
+    DEV, TESTER, PL, ADMIN;
 
-    private final int level;
+    @JsonCreator
+    public static UserRole from(String value) {
+        for (UserRole role : values()) {
+            if (role.name().equalsIgnoreCase(value)) {
+                return role;
+            }
+        }
+        return null;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return name().toLowerCase();
+    }
 }
