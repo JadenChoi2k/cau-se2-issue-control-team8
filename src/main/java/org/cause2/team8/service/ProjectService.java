@@ -20,6 +20,8 @@ import org.cause2.team8.dto.project.ProjectDTO;
 import org.cause2.team8.repository.project.IssueRepository;
 import org.cause2.team8.repository.project.ProjectRepository;
 import org.cause2.team8.repository.user.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,7 +129,9 @@ public class ProjectService {
 
     @Transactional(readOnly = true)
     public List<IssueDTO.PageItem> paginateIssues(String projectId, int page, int size) {
-        List<Issue> issues = issueRepository.paginateIssuesByProjectId(projectId, page, size);
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        Page<Issue> issues = issueRepository.findAllByProject(project, PageRequest.of(page, size));
         return issues.stream()
             .map(IssueDTO.PageItem::from)
             .toList();
