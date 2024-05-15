@@ -56,6 +56,12 @@ public class ProjectService {
     }
 
     public ProjectDTO.Info createProject(ProjectDTO.CreateRequest createRequest, HttpSession session) {
+        if (createRequest.getProjectId().equals("all")) {
+            throw new SimpleError(ErrorCode.BAD_REQUEST);
+        }
+        if (projectRepository.existsById(createRequest.getProjectId())) {
+            throw new SimpleError(ErrorCode.CONFLICT);
+        }
         Project project = createRequest.create(Utils.getAdmin(session));
         projectRepository.save(project);
         return ProjectDTO.Info.from(project);
