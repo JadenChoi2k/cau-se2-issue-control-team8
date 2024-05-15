@@ -70,6 +70,7 @@ public class ProjectController {
     }
 
     @GetMapping("/all")
+    @Operation(summary = "모든 프로젝트 조회. ADMIN만 접근 가능합니다.")
     public ResponseEntity<List<ProjectDTO.Info>> findAllProjects(HttpSession session) {
         checkAdmin(session);
         return ResponseEntity.ok(projectService.findAllProjects());
