@@ -2,7 +2,6 @@ package org.cause2.team8.domain;
 
 import org.cause2.team8.domain.user.User;
 import org.cause2.team8.domain.user.UserRole;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +14,12 @@ public class UserTest {
         // given
         String userId = "testId";
         String name = "testName";
-        String password = "testPassword";
+        String password = "testPassword!";
         UserRole role = UserRole.DEV;
         // when
         User user = User.create(userId, name, password, role);
         // then
-        assertEquals(userId, user.getUserId());
+        assertEquals(userId, user.getLoginId());
         assertEquals(name, user.getName());
         assertEquals(password, user.getPassword());
         assertEquals(role, user.getRole());

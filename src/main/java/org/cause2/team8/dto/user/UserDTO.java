@@ -21,14 +21,14 @@ public class UserDTO {
     @Getter
     @RequiredArgsConstructor
     public static class LoginRequest {
-        private final String userId;
+        private final String loginId;
         private final String password;
     }
 
     @Getter
     @RequiredArgsConstructor
     public static class JoinRequest {
-        private final String userId;
+        private final String loginId;
         private final String password;
         private final String name;
         private final UserRole role;
@@ -37,7 +37,7 @@ public class UserDTO {
             if (role == UserRole.ADMIN) {
                 throw new RuntimeException("어드민은 직접 생성할 수 없습니다.");
             }
-            return User.create(userId, name, password, role);
+            return User.create(loginId, name, password, role);
         }
     }
 }

@@ -17,7 +17,7 @@ public class User {
     private Long id;
 
     @Column(length = 100, unique = true, nullable = false, name = "login_id")
-    private String userId;
+    private String loginId;
 
     @Column(length = 20, nullable = false)
     private String name;
@@ -38,14 +38,14 @@ public class User {
      * @return validation result
      */
     public boolean validate() {
-        return userId.matches("[a-zA-Z0-9]{6,100}")
+        return loginId.matches("[a-zA-Z0-9]{6,100}")
             && name.matches("^[a-zA-Z가-힣]+[a-zA-Z가-힣_ ]{0,18}[a-zA-Z가-힣_]$")
-            && password.matches("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,20}$")
+            && password.matches("^(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,20}$")
             && role != null;
     }
 
     private User(String userId, String name, String password, UserRole role) {
-        this.userId = userId;
+        this.loginId = userId;
         this.name = name;
         this.password = password;
         this.role = role;
