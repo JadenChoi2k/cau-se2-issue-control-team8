@@ -1,9 +1,15 @@
 package org.cause2.team8.common.utils.data;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.cause2.team8.domain.project.Issue;
+import org.cause2.team8.domain.project.IssuePriority;
+import org.cause2.team8.domain.project.Project;
 import org.cause2.team8.domain.user.*;
+import org.cause2.team8.repository.project.IssueRepository;
+import org.cause2.team8.repository.project.ProjectRepository;
 import org.cause2.team8.repository.user.UserRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -18,6 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestDataHandler {
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
+    private final IssueRepository issueRepository;
+    private final EntityManager entityManager;
 
     @Transactional
     @PostConstruct
@@ -42,6 +51,23 @@ public class TestDataHandler {
         userRepository.save(pl2);
         userRepository.saveAll(devs);
         userRepository.saveAll(testers);
+
+        Project project1 = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.");
+        admin.participate(project1, pl1);
+        admin.participate(project1, pl2);
+        for (Developer dev : devs) {
+            admin.participate(project1, dev);
+        }
+        for (Tester tester : testers) {
+            admin.participate(project1, tester);
+        }
+        projectRepository.save(project1);
+
+        Issue issue = testers.get(0).reportIssue(project1, IssuePriority.MAJOR, "테스트 이슈1", "테스트 이슈1입니다.");
+        pl1.assign(issue, devs.get(0));
+        pl1.commentToIssue(issue, "테스트 이슈1에 대한 코멘트입니다.");
+        issueRepository.save(issue);
+
         log.info("test data inserted");
     }
 }
