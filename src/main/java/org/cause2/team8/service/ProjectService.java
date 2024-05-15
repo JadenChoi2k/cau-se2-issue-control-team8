@@ -54,8 +54,7 @@ public class ProjectService {
     }
 
     public ProjectDTO.Info createProject(ProjectDTO.CreateRequest createRequest, HttpSession session) {
-        Project project = createRequest.create();
-        project.getParticipants().add(Utils.getUserAuth(session));
+        Project project = createRequest.create(Utils.getAdmin(session));
         projectRepository.save(project);
         return ProjectDTO.Info.from(project);
     }

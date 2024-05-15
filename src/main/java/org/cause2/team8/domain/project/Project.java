@@ -44,10 +44,4 @@ public class Project {
         if (title != null) this.title = title;
         if (description != null) this.description = description;
     }
-
-    public Issue createIssue(IssuePriority priority, String title, String description, User reporter) {
-        Issue issue = new Issue(priority, title, description, this, reporter);
-        issueList.add(issue);
-        return issue;
-    }
 }

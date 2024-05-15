@@ -94,7 +94,7 @@ public class Issue {
         if (status != IssueStatus.ASSIGNED && status != IssueStatus.REOPENED) {
             throw new SimpleError(ErrorCode.CONFLICT);
         }
-        if (!assignee.getId().equals(fixer.getId())) {
+        if (!assignee.equals(fixer)) {
             throw new SimpleError(ErrorCode.FORBIDDEN);
         }
         this.fixer = fixer;

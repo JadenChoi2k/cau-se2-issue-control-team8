@@ -93,7 +93,7 @@ public abstract class IssueDTO {
         private final IssuePriority priority;
 
         public Issue create(Project project, User reporter) {
-            return new Issue(priority, title, description, project, reporter);
+            return reporter.reportIssue(project, priority, title, description);
         }
     }
 

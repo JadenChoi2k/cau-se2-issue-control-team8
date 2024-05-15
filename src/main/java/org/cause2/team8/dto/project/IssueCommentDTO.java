@@ -38,7 +38,7 @@ public abstract class IssueCommentDTO {
         private final String content;
 
         public IssueComment create(User user, Issue issue) {
-            return new IssueComment(user, issue, content);
+            return user.commentToIssue(issue, content);
         }
 
         public IssueComment edit(IssueComment comment) {

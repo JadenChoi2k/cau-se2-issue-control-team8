@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.cause2.team8.common.utils.exceptions.ErrorBase;
 import org.cause2.team8.common.utils.exceptions.ErrorCode;
 import org.cause2.team8.common.utils.exceptions.SimpleError;
+import org.cause2.team8.domain.project.Issue;
+import org.cause2.team8.domain.project.IssueComment;
+import org.cause2.team8.domain.project.IssuePriority;
 import org.cause2.team8.domain.project.Project;
 
 import java.util.ArrayList;
@@ -65,5 +68,15 @@ public abstract class User {
         if (!password.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,255}$")) {
             throw new SimpleError(ErrorCode.BAD_REQUEST, "비밀번호는 8 ~ 255자의 영숫자, 특수문자는 최소 1개 이상 포함해주세요");
         }
+    }
+
+    public Issue reportIssue(Project project, IssuePriority priority, String title, String description) {
+        return new Issue(priority, title, description, project, this);
+    }
+
+    public IssueComment commentToIssue(Issue issue, String content) {
+        IssueComment issueComment = new IssueComment(this, issue, content);
+        issue.getComments().add(issueComment);
+        return issueComment;
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.cause2.team8.domain.project.Issue;
 
 @Entity
 @DiscriminatorValue("PL")
@@ -21,5 +22,9 @@ public class ProjectLeader extends User {
         this.name = name;
         this.password = password;
         super.validate();
+    }
+
+    public void assign(Issue issue, Developer developer) {
+        issue.setAssignee(developer);
     }
 }

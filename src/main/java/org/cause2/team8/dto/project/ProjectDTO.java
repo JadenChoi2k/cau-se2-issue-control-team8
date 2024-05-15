@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.cause2.team8.domain.project.Project;
+import org.cause2.team8.domain.user.Admin;
 import org.cause2.team8.dto.user.UserDTO;
 
 import java.util.List;
@@ -50,8 +51,8 @@ public abstract class ProjectDTO {
         @NotNull
         private final String description;
 
-        public Project create() {
-            return new Project(projectId, title, description);
+        public Project create(Admin admin) {
+            return admin.createProject(projectId, title, description);
         }
     }
 

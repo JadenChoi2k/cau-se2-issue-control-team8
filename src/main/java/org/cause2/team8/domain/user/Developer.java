@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.cause2.team8.domain.project.Issue;
 
 @Entity
 @DiscriminatorValue("DEV")
@@ -21,5 +22,9 @@ public class Developer extends User {
         this.name = name;
         this.password = password;
         super.validate();
+    }
+
+    public void fix(Issue issue) {
+        issue.setFixer(this);
     }
 }
