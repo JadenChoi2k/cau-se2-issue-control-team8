@@ -2,8 +2,9 @@ package org.cause2.team8.dto.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.cause2.team8.domain.user.User;
-import org.cause2.team8.domain.user.UserRole;
+import org.cause2.team8.common.utils.exceptions.ErrorCode;
+import org.cause2.team8.common.utils.exceptions.SimpleError;
+import org.cause2.team8.domain.user.*;
 
 public class UserDTO {
     @Getter
@@ -14,7 +15,7 @@ public class UserDTO {
         private final UserRole role;
 
         public static Info from(User user) {
-            return new Info(user.getId(), user.getName(), user.getRole());
+            return new Info(user.getId(), user.getName(), user.getUserRole());
         }
     }
 
@@ -37,7 +38,12 @@ public class UserDTO {
             if (role == UserRole.ADMIN) {
                 throw new RuntimeException("어드민은 직접 생성할 수 없습니다.");
             }
-            return User.create(loginId, name, password, role);
+            return switch (role) {
+                case DEV -> new Developer(loginId, name, password);
+                case PL -> new ProjectLeader(loginId, name, password);
+                case TESTER -> new Tester(loginId, name, password);
+                case ADMIN -> throw new SimpleError(ErrorCode.FORBIDDEN);
+            };
         }
     }
 }

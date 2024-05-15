@@ -3,6 +3,7 @@ package org.cause2.team8.service;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.cause2.team8.common.utils.Utils;
 import org.cause2.team8.common.utils.exceptions.SimpleError;
 import org.cause2.team8.domain.user.User;
 import org.cause2.team8.domain.user.UserRole;
@@ -30,7 +31,7 @@ public class UserService {
         }
         Object user = session.getAttribute("user");
         if (user instanceof User) {
-            return ((User) user).getRole().equals(role);
+            return ((User) user).getUserRole().hasRole(role);
         }
         return false;
     }
@@ -61,13 +62,30 @@ public class UserService {
         return UserDTO.Info.from(user);
     }
 
-    public UserDTO.Info changeRole(Long userId, UserRole role) {
-        if (role == UserRole.ADMIN) {
-            throw new SimpleError(BAD_REQUEST, "ADMIN 권한은 데이터베이스 상에서만 설정 가능합니다.");
+    private UserDTO.Info editUser(User user, String property, String value) {
+        switch (property) {
+            case "name":
+                user.setName(value);
+                break;
+            case "password":
+                user.setPassword(value);
+                break;
+            default:
+                throw new SimpleError(BAD_REQUEST, "수정할 수 없는 속성입니다.");
         }
+        user.validate();
+        userRepository.save(user);
+        return UserDTO.Info.from(user);
+    }
+
+    public UserDTO.Info editMe(HttpSession session, String property, String value) {
+        User user = Utils.getUserAuth(session);
+        return editUser(user, property, value);
+    }
+
+    public UserDTO.Info editUser(Long userId, String property, String value) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new SimpleError(NOT_FOUND));
-        user.setRole(role);
-        return UserDTO.Info.from(user);
+        return editUser(user, property, value);
     }
 }

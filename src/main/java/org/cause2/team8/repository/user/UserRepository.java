@@ -2,6 +2,7 @@ package org.cause2.team8.repository.user;
 
 import lombok.NonNull;
 import org.cause2.team8.domain.user.User;
+import org.cause2.team8.domain.user.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

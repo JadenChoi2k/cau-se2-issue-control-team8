@@ -5,57 +5,51 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.cause2.team8.common.utils.exceptions.ErrorBase;
+import org.cause2.team8.common.utils.exceptions.ErrorCode;
+import org.cause2.team8.common.utils.exceptions.SimpleError;
 
 @Entity
 @Table(name = "usr")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_role")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public abstract class User {
     @Id
     @GeneratedValue
     @Column(name = "user_id")
-    private Long id;
+    protected Long id;
 
     @Column(length = 100, unique = true, nullable = false, name = "login_id")
-    private String loginId;
+    protected String loginId;
 
-    @Column(length = 20, nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
     @Setter
-    private UserRole role;
+    @Column(length = 20, nullable = false)
+    protected String name;
+
+    @Setter
+    @Column(nullable = false)
+    protected String password;
+
+    public abstract UserRole getUserRole();
 
     /**
-     * userId: 6 ~ 100자의 영숫자
-     * name: 2 ~ 20자의 영어, 한글, _(특수문자), 띄어쓰기는 단어 중간에 한 글자만 허용
-     * password: 8 ~ 20자의 영숫자, 특수문자는 최소 1개 이상 포함
+     * userId: 4 ~ 100자의 영숫자
+     * name: 2 ~ 20자의 영어 또는 한글 또는 숫자 또는 _(특수문자), 띄어쓰기는 단어 중간만 허용
+     * password: 8 ~ 255자의 영숫자, 특수문자는 최소 1개 이상 포함
      * role: not null
-     * @return validation result
+     * @throws ErrorBase 유효성 검사 실패 시 발생
      */
-    public boolean validate() {
-        return loginId.matches("[a-zA-Z0-9]{6,100}")
-            && name.matches("^[a-zA-Z가-힣]+[a-zA-Z가-힣_ ]{0,18}[a-zA-Z가-힣_]$")
-            && password.matches("^(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,20}$")
-            && role != null;
-    }
-
-    private User(String userId, String name, String password, UserRole role) {
-        this.loginId = userId;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-    }
-
-    public static User create(String userId, String name, String password, UserRole role) {
-        User user = new User(userId, name, password, role);
-        if (!user.validate()) {
-            throw new RuntimeException("Invalid user information");
+    public void validate() throws ErrorBase {
+        if (!loginId.matches("[a-zA-Z0-9]{4,100}")) {
+            throw new SimpleError(ErrorCode.BAD_REQUEST, "로그인 아이디는 4 ~ 100자의 영숫자로 입력해주세요");
         }
-        return user;
+        if (!name.matches("^(?=.{2,20}$)(?!.*\\s\\s)([a-zA-Z가-힣0-9_]+(\\s[a-zA-Z가-힣0-9_]+)?)$")) {
+            throw new SimpleError(ErrorCode.BAD_REQUEST, "이름은 2 ~ 20자의 영어, 한글, _(특수문자), 띄어쓰기는 단어 중간에 한 글자만 허용해주세요");
+        }
+        if (!password.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,255}$")) {
+            throw new SimpleError(ErrorCode.BAD_REQUEST, "비밀번호는 8 ~ 255자의 영숫자, 특수문자는 최소 1개 이상 포함해주세요");
+        }
     }
 }
