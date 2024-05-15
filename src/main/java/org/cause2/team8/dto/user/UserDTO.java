@@ -6,7 +6,7 @@ import org.cause2.team8.common.utils.exceptions.ErrorCode;
 import org.cause2.team8.common.utils.exceptions.SimpleError;
 import org.cause2.team8.domain.user.*;
 
-public class UserDTO {
+public abstract class UserDTO {
     @Getter
     @RequiredArgsConstructor
     public static class Info {

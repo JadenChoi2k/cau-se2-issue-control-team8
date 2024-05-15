@@ -8,22 +8,28 @@ import lombok.Setter;
 import org.cause2.team8.common.utils.exceptions.ErrorBase;
 import org.cause2.team8.common.utils.exceptions.ErrorCode;
 import org.cause2.team8.common.utils.exceptions.SimpleError;
+import org.cause2.team8.domain.project.Project;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usr")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_role")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class User {
     @Id
     @GeneratedValue
+    @Getter
     @Column(name = "user_id")
     protected Long id;
 
+    @Getter
     @Column(length = 100, unique = true, nullable = false, name = "login_id")
     protected String loginId;
 
+    @Getter
     @Setter
     @Column(length = 20, nullable = false)
     protected String name;
@@ -32,7 +38,15 @@ public abstract class User {
     @Column(nullable = false)
     protected String password;
 
+    @Getter
+    @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY)
+    private List<Project> participatedIn = new ArrayList<>();
+
     public abstract UserRole getUserRole();
+
+    public boolean passwordMatches(String password) {
+        return this.password.equals(password);
+    }
 
     /**
      * userId: 4 ~ 100자의 영숫자

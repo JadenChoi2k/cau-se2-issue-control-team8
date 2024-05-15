@@ -42,7 +42,7 @@ public class UserService {
     public UserDTO.Info login(UserDTO.LoginRequest loginRequest, HttpSession session) {
         User user = userRepository.findByLoginId(loginRequest.getLoginId())
             .orElseThrow(() -> new SimpleError(NOT_FOUND));
-        if (!user.getPassword().equals(loginRequest.getPassword())) {
+        if (!user.passwordMatches(loginRequest.getPassword())) {
             throw new SimpleError(UNAUTHORIZED);
         }
         session.setAttribute("user", user);

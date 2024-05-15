@@ -26,9 +26,18 @@ public class Project {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project", orphanRemoval = true)
     private List<Issue> issueList = new ArrayList<>();
 
-    public Project(String projectId, String title) {
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(
+        name = "project_participant",
+        joinColumns = @JoinColumn(name = "project_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> participants = new ArrayList<>();
+
+    public Project(String projectId, String title, String description) {
         this.projectId = projectId;
         this.title = title;
+        this.description = description;
     }
 
     public void edit(String title, String description) {

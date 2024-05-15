@@ -16,7 +16,8 @@ public class IssueComment {
     @GeneratedValue
     private Long commentId;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    // 페이징 단계에서 노출되므로 EAGER 로딩
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -29,4 +30,17 @@ public class IssueComment {
 
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;
+
+    public IssueComment(User user, Issue issue, String content) {
+        this.user = user;
+        this.issue = issue;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+        this.editedAt = LocalDateTime.now();
+    }
+
+    public void edit(String content) {
+        this.content = content;
+        this.editedAt = LocalDateTime.now();
+    }
 }

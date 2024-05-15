@@ -1,5 +1,7 @@
 package org.cause2.team8.domain.project;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,4 +16,19 @@ public enum IssuePriority {
 
     private final String description;
     private final int level;
+
+    @JsonCreator
+    public static IssuePriority from(String value) {
+        for (IssuePriority priority : IssuePriority.values()) {
+            if (priority.name().equalsIgnoreCase(value)) {
+                return priority;
+            }
+        }
+        return null;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return name().toLowerCase();
+    }
 }

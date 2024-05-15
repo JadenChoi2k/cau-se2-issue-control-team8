@@ -1,5 +1,7 @@
 package org.cause2.team8.domain.project;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -26,5 +28,20 @@ public enum IssueStatus {
             }
         }
         return null;
+    }
+
+    @JsonCreator
+    public static IssueStatus from(String value) {
+        for (IssueStatus status : IssueStatus.values()) {
+            if (status.name().equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        return null;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return name().toLowerCase();
     }
 }
