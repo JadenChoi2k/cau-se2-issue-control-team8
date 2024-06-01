@@ -15,6 +15,8 @@ import org.cause2.team8.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/user")
 @RestController
 @RequiredArgsConstructor
@@ -64,5 +66,14 @@ public class UserController {
                 throw new SimpleError(ErrorCode.BAD_REQUEST, "number type으로 입력해주세요");
             }
         }
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "모든 유저 조회. ADMIN만 접근 가능합니다.")
+    public ResponseEntity<List<UserDTO.Info>> allUsers(HttpSession session, @RequestParam int page, @RequestParam int size) {
+        if (!userService.hasRole(session, UserRole.ADMIN)) {
+            throw new SimpleError(ErrorCode.FORBIDDEN);
+        }
+        return ResponseEntity.ok(userService.allUsers(page, size));
     }
 }

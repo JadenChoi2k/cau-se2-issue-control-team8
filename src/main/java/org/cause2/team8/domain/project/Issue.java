@@ -128,4 +128,49 @@ public class Issue {
         this.status = IssueStatus.REOPENED;
         this.lastEditedAt = LocalDateTime.now();
     }
+
+    public double calculateSimilarity(Issue other) {
+        return
+            (
+                calculateSimilarity(
+                    this.title,
+                    other.title
+                ) +
+                calculateSimilarity(
+                    this.description,
+                    other.description
+                )
+            )
+            / 2;
+    }
+
+    private static double calculateSimilarity(String source, String target) {
+        int distance = calculateLevenshteinDistance(source, target);
+        int maxLength = Math.max(source.length(), target.length());
+
+        if (maxLength == 0) {
+            return 1.0; // 둘 다 빈 문자열인 경우, 유사도는 1.0
+        }
+
+        return 1.0 - (double) distance / maxLength;
+    }
+
+    private static int calculateLevenshteinDistance(String source, String target) {
+        int[][] dp = new int[source.length() + 1][target.length() + 1];
+
+        for (int i = 0; i <= source.length(); i++) {
+            for (int j = 0; j <= target.length(); j++) {
+                if (i == 0) {
+                    dp[i][j] = j; // target 문자열을 source 문자열로 변환하기 위한 삽입 횟수
+                } else if (j == 0) {
+                    dp[i][j] = i; // source 문자열을 target 문자열로 변환하기 위한 삭제 횟수
+                } else {
+                    int cost = source.charAt(i - 1) == target.charAt(j - 1) ? 0 : 1;
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + cost);
+                }
+            }
+        }
+
+        return dp[source.length()][target.length()];
+    }
 }

@@ -10,6 +10,7 @@ import org.cause2.team8.domain.user.UserRole;
 import org.cause2.team8.dto.project.IssueCommentDTO;
 import org.cause2.team8.dto.project.IssueDTO;
 import org.cause2.team8.dto.project.ProjectDTO;
+import org.cause2.team8.dto.user.UserDTO;
 import org.cause2.team8.service.ProjectService;
 import org.cause2.team8.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -77,7 +78,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/participant/{userId}")
-    @Operation(summary = "프로젝트 참여자 추가")
+    @Operation(summary = "프로젝트 참여자 추가. ADMIN만 접근 가능합니다.")
     public ResponseEntity<ProjectDTO.Detail> addParticipant(@PathVariable String projectId, @PathVariable Long userId, HttpSession session) {
         checkAdmin(session);
         return ResponseEntity.ok(projectService.addOneParticipant(projectId, userId));
@@ -134,6 +135,15 @@ public class ProjectController {
         checkPL(session);
         checkProjectAuth(session, projectId);
         return ResponseEntity.ok(projectService.assignDeveloperToIssue(issueId, userId));
+    }
+
+    @GetMapping("/{projectId}/issue/{issueId}/recommend")
+    @Operation(summary = "이슈에 할당할 개발자 추천")
+    public ResponseEntity<List<UserDTO.Info>> recommendDevelopers(
+        @PathVariable String projectId, @PathVariable String issueId, HttpSession session) {
+        checkPL(session);
+        checkProjectAuth(session, projectId);
+        return ResponseEntity.ok(projectService.recommendDevelopers(issueId));
     }
 
     @PostMapping("/{projectId}/issue/{issueId}/fix")

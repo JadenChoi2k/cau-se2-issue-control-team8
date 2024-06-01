@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.cause2.team8.domain.project.Project;
 import org.cause2.team8.domain.user.Admin;
+import org.cause2.team8.domain.user.User;
 import org.cause2.team8.dto.user.UserDTO;
 
 import java.util.List;
@@ -36,7 +37,9 @@ public abstract class ProjectDTO {
                 project.getProjectId(),
                 project.getTitle(),
                 project.getDescription(),
-                project.getParticipants().stream().map(UserDTO.Info::from).toList()
+                project.getParticipants().stream()
+                    .map(UserDTO.Info::from)
+                    .toList()
             );
         }
     }
@@ -50,9 +53,15 @@ public abstract class ProjectDTO {
         private final String title;
         @NotNull
         private final String description;
+        @NotNull
+        private final List<String> userIds;
 
-        public Project create(Admin admin) {
-            return admin.createProject(projectId, title, description);
+        public Project create(Admin admin, List<User> users) {
+            Project project = admin.createProject(projectId, title, description);
+            for (User user : users) {
+                admin.participate(project, user);
+            }
+            return project;
         }
     }
 

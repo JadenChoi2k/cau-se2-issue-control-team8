@@ -9,8 +9,11 @@ import org.cause2.team8.domain.user.User;
 import org.cause2.team8.domain.user.UserRole;
 import org.cause2.team8.dto.user.UserDTO;
 import org.cause2.team8.repository.user.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.cause2.team8.common.utils.exceptions.ErrorCode.*;
 
@@ -87,5 +90,11 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new SimpleError(NOT_FOUND));
         return editUser(user, property, value);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO.Info> allUsers(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size)).stream()
+            .map(UserDTO.Info::from).toList();
     }
 }

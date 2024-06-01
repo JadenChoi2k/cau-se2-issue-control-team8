@@ -7,16 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.cause2.team8.common.utils.Utils;
 import org.cause2.team8.common.utils.exceptions.ErrorCode;
 import org.cause2.team8.common.utils.exceptions.SimpleError;
-import org.cause2.team8.domain.project.Issue;
-import org.cause2.team8.domain.project.IssueComment;
-import org.cause2.team8.domain.project.IssueStatus;
-import org.cause2.team8.domain.project.Project;
+import org.cause2.team8.domain.project.*;
 import org.cause2.team8.domain.user.Developer;
 import org.cause2.team8.domain.user.User;
 import org.cause2.team8.domain.user.UserRole;
 import org.cause2.team8.dto.project.IssueCommentDTO;
 import org.cause2.team8.dto.project.IssueDTO;
 import org.cause2.team8.dto.project.ProjectDTO;
+import org.cause2.team8.dto.user.UserDTO;
 import org.cause2.team8.repository.project.IssueRepository;
 import org.cause2.team8.repository.project.ProjectRepository;
 import org.cause2.team8.repository.user.UserRepository;
@@ -25,7 +23,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -62,7 +63,24 @@ public class ProjectService {
         if (projectRepository.existsById(createRequest.getProjectId())) {
             throw new SimpleError(ErrorCode.CONFLICT);
         }
-        Project project = createRequest.create(Utils.getAdmin(session));
+        // userIds 중 숫자로 변환 가능한 것만 추출
+        List<Long> userIdsLong = createRequest.getUserIds().stream()
+            .map((idStr) -> {
+                try {
+                    return Long.parseLong(idStr);
+                } catch (Exception e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .toList();
+        // userIds 중 숫자로 변환 가능한 것만 DB에서 조회
+        List<User> users = new ArrayList<>();
+        if (!userIdsLong.isEmpty()) {
+            users = userRepository.findAllById(userIdsLong);
+        }
+        // 프로젝트 생성
+        Project project = createRequest.create(Utils.getAdmin(session), users);
         projectRepository.save(project);
         return ProjectDTO.Info.from(project);
     }
@@ -177,6 +195,56 @@ public class ProjectService {
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
         issue.setAssignee(dev);
         return IssueDTO.Detail.from(issue);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO.Info> recommendDevelopers(String issueId) {
+        Issue issue = issueRepository.findByIssueIdOpt(Long.parseLong(issueId))
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        // 이미 할당된 경우
+        if (issue.getAssignee() != null) {
+            throw new SimpleError(ErrorCode.CONFLICT);
+        }
+
+        // 추천 방식
+        // 1. 해당 프로젝트에 참여 중인 개발자 중 처리 중인 이슈가 적은 순
+        // 2. 이전의 처리한 이슈와 현재 이슈의 유사도가 높은 순
+        // 3. 이전의 이슈 처리 수가 높은 순
+        // 위의 순서대로 차례차례 추천
+
+        List<Developer> developers
+            = projectRepository.getDevelopersOrderByAssignedCountAsc(issue.getProject());
+        developers.sort((d1, d2) -> {
+            List<Issue> i1 = d1.getAssignedIssues();
+            List<Issue> i2 = d2.getAssignedIssues();
+
+            if (i1.isEmpty() && i2.isEmpty()) {
+                return 0;
+            } else if (i1.isEmpty()) {
+                return 1;
+            } else if (i2.isEmpty()) {
+                return -1;
+            }
+
+            double d1Score = i1.stream()
+                .mapToDouble(i -> i.calculateSimilarity(issue))
+                .sum() / i1.size();
+            double d2Score = i2.stream()
+                .mapToDouble(i -> i.calculateSimilarity(issue))
+                .sum() / i2.size();
+
+            if (d1Score > d2Score) {
+                return -1;
+            } else if (d1Score < d2Score) {
+                return 1;
+            } else {
+                return -Integer.compare(i1.size(), i2.size());
+            }
+        });
+
+        return developers.stream()
+            .map(UserDTO.Info::from)
+            .toList();
     }
 
     public IssueDTO.Detail fixIssue(Long issueId, HttpSession session) {
