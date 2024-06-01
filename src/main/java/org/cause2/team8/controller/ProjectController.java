@@ -99,6 +99,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/participants")
+    @Operation(summary = "프로젝트 참여자 목록 조회. PL 권한 이상만 가능.")
     public ResponseEntity<List<UserDTO.Info>> findAllParticipants(@PathVariable String projectId, HttpSession session) {
         checkPL(session);
         checkProjectAuth(session, projectId);
