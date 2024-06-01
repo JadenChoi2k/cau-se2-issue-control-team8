@@ -117,7 +117,8 @@ public class ProjectService {
 
     public List<ProjectDTO.Info> findAllParticipatingProjects(HttpSession session) {
         User user = Utils.getUserAuth(session);
-        entityManager.persist(user);
+        user = userRepository.findById(user.getId())
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
         return user.getParticipatedIn().stream()
             .map(ProjectDTO.Info::from)
             .toList();
@@ -154,7 +155,8 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
         User user = Utils.getUserAuth(session);
-        entityManager.persist(user);
+        user = userRepository.findById(user.getId())
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
         Issue issue = createRequest.create(project, user);
         issueRepository.save(issue);
         return IssueDTO.Detail.from(issue);
@@ -268,7 +270,8 @@ public class ProjectService {
         }
         User user = Utils.getUserAuth(session);
         if (user instanceof Developer) {
-            entityManager.persist(user);
+            user = userRepository.findById(user.getId())
+                .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
             issue.setFixer((Developer) user);
             return IssueDTO.Detail.from(issue);
         } else {
