@@ -23,5 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select pl from ProjectLeader pl where pl.id = :id")
     Optional<ProjectLeader> findProjectLeaderById(Long id);
 
-    List<User> findByNameContaining(String name, Pageable pageable);
+    List<User> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
