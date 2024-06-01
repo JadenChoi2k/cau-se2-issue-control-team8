@@ -70,10 +70,11 @@ public class UserController {
 
     @GetMapping("/all")
     @Operation(summary = "모든 유저 조회. ADMIN만 접근 가능합니다.")
-    public ResponseEntity<List<UserDTO.Info>> allUsers(HttpSession session, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<List<UserDTO.Info>> allUsers(HttpSession session, @RequestParam(required = false) String q,
+                                                       @RequestParam int page, @RequestParam int size) {
         if (!userService.hasRole(session, UserRole.ADMIN)) {
             throw new SimpleError(ErrorCode.FORBIDDEN);
         }
-        return ResponseEntity.ok(userService.allUsers(page, size));
+        return ResponseEntity.ok(userService.allUsers(q, page, size));
     }
 }

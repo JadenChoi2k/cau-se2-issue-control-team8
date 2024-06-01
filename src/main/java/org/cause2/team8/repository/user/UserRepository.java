@@ -5,9 +5,11 @@ import org.cause2.team8.domain.user.Developer;
 import org.cause2.team8.domain.user.ProjectLeader;
 import org.cause2.team8.domain.user.User;
 import org.cause2.team8.domain.user.UserRole;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -20,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select pl from ProjectLeader pl where pl.id = :id")
     Optional<ProjectLeader> findProjectLeaderById(Long id);
+
+    List<User> findByNameContaining(String name, Pageable pageable);
 }

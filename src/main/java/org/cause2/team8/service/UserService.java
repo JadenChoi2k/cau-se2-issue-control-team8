@@ -93,8 +93,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserDTO.Info> allUsers(int page, int size) {
-        return userRepository.findAll(PageRequest.of(page, size)).stream()
+    public List<UserDTO.Info> allUsers(String q, int page, int size) {
+        List<User> users;
+        if (q == null) {
+            users = userRepository.findAll(PageRequest.of(page, size)).toList();
+        } else {
+            users = userRepository.findByNameContaining(q, PageRequest.of(page, size));
+        }
+        return users.stream()
             .map(UserDTO.Info::from).toList();
     }
 }
