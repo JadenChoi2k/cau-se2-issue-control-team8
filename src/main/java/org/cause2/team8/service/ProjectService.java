@@ -138,6 +138,15 @@ public class ProjectService {
         return ProjectDTO.Detail.from(project);
     }
 
+    @Transactional(readOnly = true)
+    public List<UserDTO.Info> findAllParticipants(String projectId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        return project.getParticipants().stream()
+            .map(UserDTO.Info::from)
+            .toList();
+    }
+
     public IssueDTO.Detail reportOneIssue(String projectId, IssueDTO.CreateRequest createRequest, HttpSession session) {
         if (!hasProjectAuth(session, projectId)) {
             throw new SimpleError(ErrorCode.FORBIDDEN);
@@ -152,10 +161,15 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDTO.PageItem> paginateIssues(String projectId, int page, int size) {
+    public List<IssueDTO.PageItem> paginateIssues(String projectId, String q, int page, int size) {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
-        Page<Issue> issues = issueRepository.findAllByProject(project, PageRequest.of(page, size));
+        Page<Issue> issues;
+        if (q != null) {
+            issues = issueRepository.findAllByProjectAndTitleContainingIgnoreCase(project, q, PageRequest.of(page, size));
+        } else {
+            issues = issueRepository.findAllByProject(project, PageRequest.of(page, size));
+        }
         return issues.stream()
             .map(IssueDTO.PageItem::from)
             .toList();

@@ -11,8 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+// {"action":"invite","inviter":124124,"invitee":[123123123,324234,23423423]}
+
 public interface IssueRepository extends JpaRepository<Issue, Long> {
     Page<Issue> findAllByProject(Project project, PageRequest pageRequest);
+
+    Page<Issue> findAllByProjectAndTitleContainingIgnoreCase(Project project, String title, PageRequest pageRequest);
 
     @Query("select i from Issue i" +
         " join fetch i.project" +

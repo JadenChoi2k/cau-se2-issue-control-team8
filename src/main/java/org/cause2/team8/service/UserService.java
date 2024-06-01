@@ -98,7 +98,7 @@ public class UserService {
         if (q == null) {
             users = userRepository.findAll(PageRequest.of(page, size)).toList();
         } else {
-            users = userRepository.findByNameContaining(q, PageRequest.of(page, size));
+            users = userRepository.findByNameContainingIgnoreCase(q, PageRequest.of(page, size));
         }
         return users.stream()
             .map(UserDTO.Info::from).toList();

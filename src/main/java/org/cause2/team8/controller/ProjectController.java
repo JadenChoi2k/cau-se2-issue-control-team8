@@ -98,6 +98,13 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.findOneProject(projectId, session));
     }
 
+    @GetMapping("/{projectId}/participants")
+    public ResponseEntity<List<UserDTO.Info>> findAllParticipants(@PathVariable String projectId, HttpSession session) {
+        checkPL(session);
+        checkProjectAuth(session, projectId);
+        return ResponseEntity.ok(projectService.findAllParticipants(projectId));
+    }
+
     @PostMapping("/{projectId}/issue")
     @Operation(summary = "이슈 생성")
     public ResponseEntity<IssueDTO.Detail> reportOneIssue(
@@ -108,9 +115,11 @@ public class ProjectController {
     @GetMapping("/{projectId}/issue")
     @Operation(summary = "이슈 목록 조회")
     public ResponseEntity<List<IssueDTO.PageItem>> paginateIssues(
-        @PathVariable String projectId, @RequestParam Integer page, @RequestParam Integer size, HttpSession session) {
+        @PathVariable String projectId, @RequestParam(required = false) String q,
+        @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size,
+        HttpSession session) {
         checkProjectAuth(session, projectId);
-        return ResponseEntity.ok(projectService.paginateIssues(projectId, page, size));
+        return ResponseEntity.ok(projectService.paginateIssues(projectId, q, page, size));
     }
 
     @GetMapping("/{projectId}/issue/{issueId}")
