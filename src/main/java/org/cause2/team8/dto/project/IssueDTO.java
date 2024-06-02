@@ -24,6 +24,7 @@ public abstract class IssueDTO {
         private final IssueStatus status;
         private final String title;
         private final LocalDateTime reportedAt;
+        private final LocalDateTime dueDate;
         private final LocalDateTime fixedAt;
         private final LocalDateTime resolvedAt;
         private final LocalDateTime closedAt;
@@ -36,6 +37,7 @@ public abstract class IssueDTO {
                 issue.getStatus(),
                 issue.getTitle(),
                 issue.getReportedAt(),
+                issue.getDueDate(),
                 issue.getFixedAt(),
                 issue.getResolvedAt(),
                 issue.getClosedAt(),
@@ -53,6 +55,7 @@ public abstract class IssueDTO {
         private final String title;
         private final String description;
         private final LocalDateTime reportedAt;
+        private final LocalDateTime dueDate;
         private final LocalDateTime fixedAt;
         private final LocalDateTime resolvedAt;
         private final LocalDateTime closedAt;
@@ -70,6 +73,7 @@ public abstract class IssueDTO {
                 issue.getTitle(),
                 issue.getDescription(),
                 issue.getReportedAt(),
+                issue.getDueDate(),
                 issue.getFixedAt(),
                 issue.getResolvedAt(),
                 issue.getClosedAt(),
@@ -91,9 +95,11 @@ public abstract class IssueDTO {
         private final String description;
         @NotNull
         private final IssuePriority priority;
+        @NotNull
+        private final LocalDateTime dueDate;
 
         public Issue create(Project project, User reporter) {
-            return reporter.reportIssue(project, priority, title, description);
+            return reporter.reportIssue(project, priority, title, description, dueDate);
         }
     }
 

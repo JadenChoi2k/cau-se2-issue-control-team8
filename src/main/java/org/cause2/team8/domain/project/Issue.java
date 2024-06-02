@@ -10,6 +10,7 @@ import org.cause2.team8.common.utils.exceptions.SimpleError;
 import org.cause2.team8.domain.user.Developer;
 import org.cause2.team8.domain.user.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,8 @@ public class Issue {
 
     @Column(nullable = false)
     private LocalDateTime reportedAt;
+    @Column(nullable = false)
+    private LocalDateTime dueDate;
     private LocalDateTime lastEditedAt;
     private LocalDateTime fixedAt;
     private LocalDateTime resolvedAt;
@@ -64,14 +67,15 @@ public class Issue {
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IssueComment> comments = new ArrayList<>();
 
-    public Issue(IssuePriority priority, String title, String description, Project project, User reporter) {
+    public Issue(IssuePriority priority, String title, String description, Project project, User reporter, LocalDateTime dueDate) {
         this.priority = priority;
         this.title = title;
         this.description = description;
         this.project = project;
         this.reporter = reporter;
+        this.dueDate = dueDate;
         this.reportedAt = LocalDateTime.now();
-        this. lastEditedAt = LocalDateTime.now();
+        this.lastEditedAt = LocalDateTime.now();
     }
 
     public void edit(String title, String description, IssuePriority priority) {

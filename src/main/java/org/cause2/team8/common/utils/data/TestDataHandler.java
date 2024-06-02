@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class TestDataHandler {
         }
         projectRepository.save(project1);
 
-        Issue issue = testers.get(0).reportIssue(project1, IssuePriority.MAJOR, "테스트 이슈1", "테스트 이슈1입니다.");
+        Issue issue = testers.get(0).reportIssue(project1, IssuePriority.MAJOR, "테스트 이슈1", "테스트 이슈1입니다.", LocalDateTime.of(2024, 6, 10, 10, 0));
         pl1.assign(issue, devs.get(0));
         pl1.commentToIssue(issue, "테스트 이슈1에 대한 코멘트입니다.");
         issueRepository.save(issue);

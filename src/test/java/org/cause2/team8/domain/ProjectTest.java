@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -57,7 +58,7 @@ public class ProjectTest {
         IssuePriority priority = IssuePriority.MAJOR;
         String title = "이슈1";
         String description = "이슈1 설명";
-        return reporter.reportIssue(project, priority, title, description);
+        return reporter.reportIssue(project, priority, title, description, LocalDateTime.of(2024, 6, 10, 10, 0));
     }
 
     @Test
@@ -118,7 +119,7 @@ public class ProjectTest {
         String title = "이슈1";
         String description = "이슈1 설명";
         // when
-        Issue issue = reporter.reportIssue(project, priority, title, description);
+        Issue issue = reporter.reportIssue(project, priority, title, description, LocalDateTime.of(2024, 6, 10, 10, 0));
         // then
         assertEquals(issue.getReporter(), reporter);
         assertEquals(issue.getPriority(), priority);

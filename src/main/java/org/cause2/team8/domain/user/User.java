@@ -13,6 +13,8 @@ import org.cause2.team8.domain.project.IssueComment;
 import org.cause2.team8.domain.project.IssuePriority;
 import org.cause2.team8.domain.project.Project;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +72,8 @@ public abstract class User {
         }
     }
 
-    public Issue reportIssue(Project project, IssuePriority priority, String title, String description) {
-        return new Issue(priority, title, description, project, this);
+    public Issue reportIssue(Project project, IssuePriority priority, String title, String description, LocalDateTime dueDate) {
+        return new Issue(priority, title, description, project, this, dueDate);
     }
 
     public IssueComment commentToIssue(Issue issue, String content) {

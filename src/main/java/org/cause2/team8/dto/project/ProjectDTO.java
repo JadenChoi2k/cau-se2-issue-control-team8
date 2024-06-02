@@ -19,9 +19,11 @@ public abstract class ProjectDTO {
         private final String projectId;
         private final String title;
         private final String description;
+        private final LocalDate startDate;
+        private final LocalDate dueDate;
 
         public static Info from(Project project) {
-            return new Info(project.getProjectId(), project.getTitle(), project.getDescription());
+            return new Info(project.getProjectId(), project.getTitle(), project.getDescription(), project.getStartDate(), project.getDueDate());
         }
     }
 
@@ -31,6 +33,8 @@ public abstract class ProjectDTO {
         private final String projectId;
         private final String title;
         private final String description;
+        private final LocalDate startDate;
+        private final LocalDate dueDate;
         private final List<UserDTO.Info> participants;
 
         public static Detail from(Project project) {
@@ -38,6 +42,8 @@ public abstract class ProjectDTO {
                 project.getProjectId(),
                 project.getTitle(),
                 project.getDescription(),
+                project.getStartDate(),
+                project.getDueDate(),
                 project.getParticipants().stream()
                     .map(UserDTO.Info::from)
                     .toList()
