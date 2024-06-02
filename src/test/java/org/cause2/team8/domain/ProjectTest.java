@@ -5,6 +5,7 @@ import org.cause2.team8.domain.user.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -42,7 +43,7 @@ public class ProjectTest {
 
     Project testProject() {
         Admin admin = testAdmin();
-        Project project = admin.createProject("project1", "프로젝트1", "프로젝트1 설명");
+        Project project = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.", LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
         admin.participate(project, testTester());
         admin.participate(project, testDev());
         admin.participate(project, testPL());
@@ -68,7 +69,7 @@ public class ProjectTest {
         String title = "프로젝트1";
         String description = "프로젝트1 설명";
         // when
-        Project project = admin.createProject(projectId, title, description);
+        Project project = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.", LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
         // then
         assertEquals(projectId, project.getProjectId());
         assertEquals(title, project.getTitle());
@@ -95,7 +96,7 @@ public class ProjectTest {
     void participateToProject() {
         // given
         Admin admin = testAdmin();
-        Project project = admin.createProject("project1", "프로젝트1", "프로젝트1 설명");
+        Project project = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.", LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
         Tester tester = testTester();
         Developer dev = testDev();
         ProjectLeader pl = testPL();

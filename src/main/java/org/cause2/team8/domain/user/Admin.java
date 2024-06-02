@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.cause2.team8.domain.project.Project;
 
+import java.time.LocalDate;
+
 @Entity
 @DiscriminatorValue("ADMIN")
 @Getter
@@ -24,8 +26,8 @@ public class Admin extends User {
         super.validate();
     }
 
-    public Project createProject(String projectId, String title, String description) {
-        Project project = new Project(projectId, title, description);
+    public Project createProject(String projectId, String title, String description, LocalDate startDate, LocalDate dueDate) {
+        Project project = new Project(projectId, title, description, startDate, dueDate);
         participate(project, this);
         return project;
     }

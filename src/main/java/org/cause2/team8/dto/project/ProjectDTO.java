@@ -9,6 +9,7 @@ import org.cause2.team8.domain.user.Admin;
 import org.cause2.team8.domain.user.User;
 import org.cause2.team8.dto.user.UserDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public abstract class ProjectDTO {
@@ -54,10 +55,14 @@ public abstract class ProjectDTO {
         @NotNull
         private final String description;
         @NotNull
+        private final LocalDate startDate;
+        @NotNull
+        private final LocalDate dueDate;
+        @NotNull
         private final List<String> userIds;
 
         public Project create(Admin admin, List<User> users) {
-            Project project = admin.createProject(projectId, title, description);
+            Project project = admin.createProject(projectId, title, description, startDate, dueDate);
             for (User user : users) {
                 admin.participate(project, user);
             }

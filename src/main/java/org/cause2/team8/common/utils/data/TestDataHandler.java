@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class TestDataHandler {
         userRepository.saveAll(devs);
         userRepository.saveAll(testers);
 
-        Project project1 = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.");
+        Project project1 = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.", LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
         admin.participate(project1, pl1);
         admin.participate(project1, pl2);
         for (Developer dev : devs) {
