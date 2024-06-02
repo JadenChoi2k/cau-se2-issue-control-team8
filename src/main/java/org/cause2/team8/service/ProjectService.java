@@ -323,6 +323,14 @@ public class ProjectService {
         return IssueCommentDTO.Main.from(issueComment);
     }
 
+    public List<IssueCommentDTO.Main> findAllIssueComments(Long issueId) {
+        Issue issue = issueRepository.findByIssueIdOpt(issueId)
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        return issue.getComments().stream()
+            .map(IssueCommentDTO.Main::from)
+            .toList();
+    }
+
     public IssueCommentDTO.Main editIssueComment(String projectId, Long issueId, Long commentId, IssueCommentDTO.Request editRequest, HttpSession session) {
         User user = Utils.getUserAuth(session);
         IssueComment comment = entityManager

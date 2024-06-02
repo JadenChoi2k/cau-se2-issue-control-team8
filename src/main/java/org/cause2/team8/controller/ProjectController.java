@@ -204,6 +204,15 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.commentToIssue(projectId, issueId, commentRequest, session));
     }
 
+    @GetMapping("/{projectId}/issue/{issueId}/comment")
+    @Operation(summary = "이슈 댓글 목록 조회")
+    public ResponseEntity<List<IssueCommentDTO.Main>> getAllComments(
+        @PathVariable String projectId, @PathVariable Long issueId, HttpSession session) {
+        checkProjectAuth(session, projectId);
+        return ResponseEntity.ok(projectService.findAllIssueComments(issueId));
+
+    }
+
     @PatchMapping("/{projectId}/issue/{issueId}/comment/{commentId}")
     @Operation(summary = "이슈 댓글 수정")
     public ResponseEntity<IssueCommentDTO.Main> editIssueComment(
