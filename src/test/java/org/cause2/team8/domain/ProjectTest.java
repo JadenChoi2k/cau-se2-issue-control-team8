@@ -69,8 +69,10 @@ public class ProjectTest {
         String projectId = "project1";
         String title = "프로젝트1";
         String description = "프로젝트1 설명";
+        LocalDate startDate = LocalDate.of(2024, 1, 1);
+        LocalDate dueDate = LocalDate.of(2024, 12, 31);
         // when
-        Project project = admin.createProject("project1", "프로젝트1", "예시 프로젝트입니다.", LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+        Project project = admin.createProject(projectId, title, description, startDate, dueDate);
         // then
         assertEquals(projectId, project.getProjectId());
         assertEquals(title, project.getTitle());
