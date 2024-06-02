@@ -1,5 +1,6 @@
 package org.cause2.team8.dto.project;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public abstract class IssueDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "issuePageItem")
     public static class PageItem {
         private final Long id;
         private final IssuePriority priority;
@@ -48,6 +50,7 @@ public abstract class IssueDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "IssueDetail")
     public static class Detail {
         private final Long id;
         private final IssuePriority priority;
@@ -88,6 +91,7 @@ public abstract class IssueDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "IssueCreateRequest")
     public static class CreateRequest {
         @NotEmpty
         private final String title;
@@ -105,6 +109,7 @@ public abstract class IssueDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "IssueEditRequest")
     public static class EditRequest {
         private final String title;
         private final String description;

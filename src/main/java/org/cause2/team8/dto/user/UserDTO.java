@@ -1,5 +1,6 @@
 package org.cause2.team8.dto.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.cause2.team8.common.utils.exceptions.ErrorCode;
@@ -9,6 +10,7 @@ import org.cause2.team8.domain.user.*;
 public abstract class UserDTO {
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "UserInfo")
     public static class Info {
         private final Long id;
         private final String name;
@@ -21,6 +23,7 @@ public abstract class UserDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "UserLoginRequest")
     public static class LoginRequest {
         private final String loginId;
         private final String password;
@@ -28,6 +31,7 @@ public abstract class UserDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "UserJoinRequest")
     public static class JoinRequest {
         private final String loginId;
         private final String password;

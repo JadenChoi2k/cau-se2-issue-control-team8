@@ -1,5 +1,6 @@
 package org.cause2.team8.dto.project;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 public abstract class ProjectDTO {
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "ProjectInfo")
     public static class Info {
         private final String projectId;
         private final String title;
@@ -29,6 +31,7 @@ public abstract class ProjectDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "ProjectDetail")
     public static class Detail {
         private final String projectId;
         private final String title;
@@ -53,6 +56,7 @@ public abstract class ProjectDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "ProjectCreateRequest")
     public static class CreateRequest {
         @NotEmpty
         private final String projectId;
@@ -78,6 +82,7 @@ public abstract class ProjectDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "ProjectEditRequest")
     public static class EditRequest {
         private final String title;
         private final String description;

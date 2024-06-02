@@ -1,5 +1,6 @@
 package org.cause2.team8.dto.project;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 public abstract class IssueCommentDTO {
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "IssueCommentMain")
     public static class Main {
         private final Long commentId;
         private final UserDTO.Info user;
@@ -33,6 +35,7 @@ public abstract class IssueCommentDTO {
 
     @Getter
     @RequiredArgsConstructor
+    @Schema(name = "IssueCommentRequest")
     public static class Request {
         @Max(1000)
         private final String content;
