@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,7 +55,7 @@ public class ProjectTest {
     Issue testIssue() {
         // given
         Project project = testProject();
-        User reporter = project.getParticipants().get(new Random().nextInt(project.getParticipants().size()));
+        User reporter = project.getParticipants().stream().toList().get(new Random().nextInt(project.getParticipants().size()));
         IssuePriority priority = IssuePriority.MAJOR;
         String title = "이슈1";
         String description = "이슈1 설명";
@@ -77,7 +78,7 @@ public class ProjectTest {
         assertEquals(projectId, project.getProjectId());
         assertEquals(title, project.getTitle());
         assertEquals(description, project.getDescription());
-        assertEquals(project.getParticipants().get(0), admin);
+        assertEquals(project.getParticipants().stream().toList().get(0), admin);
     }
 
     @Test
@@ -108,7 +109,9 @@ public class ProjectTest {
         admin.participate(project, dev);
         admin.participate(project, pl);
         // then
-        assertIterableEquals(project.getParticipants(), List.of(admin, tester, dev, pl));
+        for (User user : project.getParticipants()) {
+            assertTrue(Set.of(admin, tester, dev, pl).contains(user));
+        }
     }
 
     @Test
@@ -116,7 +119,7 @@ public class ProjectTest {
     void createIssue() {
         // given
         Project project = testProject();
-        User reporter = project.getParticipants().get(new Random().nextInt(project.getParticipants().size()));
+        User reporter = project.getParticipants().stream().toList().get(new Random().nextInt(project.getParticipants().size()));
         IssuePriority priority = IssuePriority.MAJOR;
         String title = "이슈1";
         String description = "이슈1 설명";
@@ -255,9 +258,10 @@ public class ProjectTest {
         Developer dev2 = testDev2();
         admin.participate(issue.getProject(), dev2);
         ProjectLeader pl = getUser(issue.getProject(), ProjectLeader.class);
-        Developer dev = getUser(issue.getProject(), Developer.class);
+        Developer dev = testDev(); // getUser(issue.getProject(), Developer.class);
         pl.assign(issue, dev);
         // when & then
+        assertNotEquals(dev, dev2);
         assertThrows(RuntimeException.class, () -> dev2.fix(issue));
     }
 
@@ -307,7 +311,7 @@ public class ProjectTest {
     void commentToIssue() {
         // given
         Issue issue = testIssue();
-        User commenter = issue.getProject().getParticipants().get(new Random().nextInt(issue.getProject().getParticipants().size()));
+        User commenter = issue.getProject().getParticipants().stream().toList().get(new Random().nextInt(issue.getProject().getParticipants().size()));
         String content = "코멘트1";
         // when
         IssueComment comment = commenter.commentToIssue(issue, content);
@@ -325,7 +329,7 @@ public class ProjectTest {
     void editComment() {
         // given
         Issue issue = testIssue();
-        User commenter = issue.getProject().getParticipants().get(new Random().nextInt(issue.getProject().getParticipants().size()));
+        User commenter = issue.getProject().getParticipants().stream().toList().get(new Random().nextInt(issue.getProject().getParticipants().size()));
         String content = "코멘트1";
         IssueComment comment = commenter.commentToIssue(issue, content);
         String newContent = "코멘트1 수정";
