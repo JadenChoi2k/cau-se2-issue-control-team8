@@ -209,9 +209,9 @@ public class ProjectService {
     public IssueDTO.Detail assignDeveloperToIssue(Long issueId, Long userId) {
         Issue issue = issueRepository.findByIssueIdOpt(issueId)
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
-        if (issue.getStatus() != IssueStatus.NEW) {
-            throw new SimpleError(ErrorCode.CONFLICT);
-        }
+//        if (issue.getStatus() != IssueStatus.NEW) {
+//            throw new SimpleError(ErrorCode.CONFLICT);
+//        }
         if (!projectRepository.participating(issue.getProject().getProjectId(), userId)) {
             throw new SimpleError(ErrorCode.FORBIDDEN);
         }
