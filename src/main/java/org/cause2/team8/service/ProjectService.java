@@ -50,7 +50,9 @@ public class ProjectService {
         User user = Utils.getUserAuth(session);
         Issue issue = issueRepository.findByIssueIdOpt(issueId)
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
-        if (!user.getUserRole().hasRole(UserRole.PL) && !issue.getReporter().getId().equals(user.getId())) {
+        if (!user.getUserRole().hasRole(UserRole.PL)
+            && !issue.getReporter().getId().equals(user.getId())
+            && !issue.getAssignee().getId().equals(user.getId())) {
             throw new SimpleError(ErrorCode.FORBIDDEN);
         }
         return issue;
