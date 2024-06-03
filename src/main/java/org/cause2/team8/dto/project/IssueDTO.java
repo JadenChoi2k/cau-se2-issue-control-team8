@@ -31,6 +31,7 @@ public abstract class IssueDTO {
         private final LocalDateTime resolvedAt;
         private final LocalDateTime closedAt;
         private final UserDTO.Info reporter;
+        private final UserDTO.Info assignee;
 
         public static PageItem from(org.cause2.team8.domain.project.Issue issue) {
             return new PageItem(
@@ -43,7 +44,8 @@ public abstract class IssueDTO {
                 issue.getFixedAt(),
                 issue.getResolvedAt(),
                 issue.getClosedAt(),
-                UserDTO.Info.from(issue.getReporter())
+                UserDTO.Info.from(issue.getReporter()),
+                issue.getAssignee() == null ? null : UserDTO.Info.from(issue.getAssignee())
             );
         }
     }

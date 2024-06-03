@@ -163,14 +163,22 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDTO.PageItem> paginateIssues(String projectId, String q, int page, int size) {
+    public List<IssueDTO.PageItem> paginateIssues(String projectId, String q, IssueStatus status, int page, int size) {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
         Page<Issue> issues;
-        if (q != null) {
-            issues = issueRepository.findAllByProjectAndTitleContainingIgnoreCase(project, q, PageRequest.of(page, size));
+        if (q != null && !q.isBlank()) {
+            if (status != null) {
+                issues = issueRepository.findAllByProjectAndTitleContainingIgnoreCaseAndStatus(project, q, status, PageRequest.of(page, size));
+            } else {
+                issues = issueRepository.findAllByProjectAndTitleContainingIgnoreCase(project, q, PageRequest.of(page, size));
+            }
         } else {
-            issues = issueRepository.findAllByProject(project, PageRequest.of(page, size));
+            if (status != null) {
+                issues = issueRepository.findAllByProjectAndStatus(project, status, PageRequest.of(page, size));
+            } else {
+                issues = issueRepository.findAllByProject(project, PageRequest.of(page, size));
+            }
         }
         return issues.stream()
             .map(IssueDTO.PageItem::from)

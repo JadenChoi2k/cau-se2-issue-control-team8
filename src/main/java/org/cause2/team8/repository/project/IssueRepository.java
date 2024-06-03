@@ -1,6 +1,7 @@
 package org.cause2.team8.repository.project;
 
 import org.cause2.team8.domain.project.Issue;
+import org.cause2.team8.domain.project.IssueStatus;
 import org.cause2.team8.domain.project.Project;
 import org.cause2.team8.domain.user.User;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,10 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     Page<Issue> findAllByProject(Project project, PageRequest pageRequest);
 
     Page<Issue> findAllByProjectAndTitleContainingIgnoreCase(Project project, String title, PageRequest pageRequest);
+
+    Page<Issue> findAllByProjectAndTitleContainingIgnoreCaseAndStatus(Project project, String title, IssueStatus issueStatus, PageRequest pageRequest);
+
+    Page<Issue> findAllByProjectAndStatus(Project project, IssueStatus issueStatus, PageRequest pageRequest);
 
     @Query("select i from Issue i" +
         " join fetch i.project" +

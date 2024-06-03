@@ -116,11 +116,12 @@ public class ProjectController {
     @GetMapping("/{projectId}/issue")
     @Operation(summary = "이슈 목록 조회")
     public ResponseEntity<List<IssueDTO.PageItem>> paginateIssues(
-        @PathVariable String projectId, @RequestParam(required = false) String q,
+        @PathVariable String projectId, @RequestParam(required = false) String q, @RequestParam(required = false) String status,
         @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size,
         HttpSession session) {
         checkProjectAuth(session, projectId);
-        return ResponseEntity.ok(projectService.paginateIssues(projectId, q, page, size));
+        IssueStatus issueStatus = IssueStatus.from(status);
+        return ResponseEntity.ok(projectService.paginateIssues(projectId, q, issueStatus, page, size));
     }
 
     @GetMapping("/{projectId}/issue/{issueId}")
