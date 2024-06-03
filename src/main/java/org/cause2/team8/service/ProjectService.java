@@ -273,18 +273,11 @@ public class ProjectService {
 
     public IssueDTO.Detail fixIssue(Long issueId, HttpSession session) {
         Issue issue = findOneIssueAuth(issueId, session);
-        if (issue.getStatus() != IssueStatus.ASSIGNED && issue.getStatus() != IssueStatus.REOPENED) {
-            throw new SimpleError(ErrorCode.CONFLICT);
-        }
         User user = Utils.getUserAuth(session);
-        if (user.getUserRole().hasRole(UserRole.DEV)) {
-            user = userRepository.findById(user.getId())
-                .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
-            issue.setFixer((Developer) user);
-            return IssueDTO.Detail.from(issue);
-        } else {
-            throw new SimpleError(ErrorCode.FORBIDDEN);
-        }
+        user = userRepository.findById(user.getId())
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        issue.setFixer((Developer) user);
+        return IssueDTO.Detail.from(issue);
     }
 
     public IssueDTO.Detail resolveIssue(Long issueId, HttpSession session) {

@@ -38,6 +38,13 @@ public class ProjectController {
         }
     }
 
+    private void checkDev(HttpSession session) {
+        if (!userService.hasRole(session, UserRole.DEV)) {
+            throw new SimpleError(ErrorCode.FORBIDDEN);
+        }
+    }
+
+
     private void checkProjectAuth(HttpSession session, String projectId) {
         if (!projectService.hasProjectAuth(session, projectId)) {
             throw new SimpleError(ErrorCode.FORBIDDEN);
@@ -160,6 +167,7 @@ public class ProjectController {
     @PostMapping("/{projectId}/issue/{issueId}/fix")
     @Operation(summary = "이슈 fixed 처리. developer이면서 assignee만 가능.")
     public ResponseEntity<IssueDTO.Detail> fixIssue(@PathVariable String projectId, @PathVariable Long issueId, HttpSession session) {
+        checkDev(session);
         checkProjectAuth(session, projectId);
         return ResponseEntity.ok(projectService.fixIssue(issueId, session));
     }
