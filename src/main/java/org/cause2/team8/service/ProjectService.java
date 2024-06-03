@@ -277,7 +277,7 @@ public class ProjectService {
             throw new SimpleError(ErrorCode.CONFLICT);
         }
         User user = Utils.getUserAuth(session);
-        if (user instanceof Developer) {
+        if (user.getUserRole().hasRole(UserRole.DEV)) {
             user = userRepository.findById(user.getId())
                 .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
             issue.setFixer((Developer) user);
