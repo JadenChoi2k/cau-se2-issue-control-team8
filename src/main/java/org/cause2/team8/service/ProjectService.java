@@ -117,6 +117,14 @@ public class ProjectService {
         return ProjectDTO.Detail.from(project);
     }
 
+    public void deleteParticipant(String projectId, Long userId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
+        project.getParticipants().remove(user);
+    }
+
     public List<ProjectDTO.Info> findAllParticipatingProjects(HttpSession session) {
         User user = Utils.getUserAuth(session);
         user = userRepository.findById(user.getId())

@@ -91,6 +91,14 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.addOneParticipant(projectId, userId));
     }
 
+    @DeleteMapping("/{projectId}/participant/{userId}")
+    @Operation(summary = "프로젝트 참여자 삭제. ADMIN만 접근 가능합니다.")
+    public ResponseEntity<?> deleteParticipant(@PathVariable String projectId, @PathVariable Long userId, HttpSession session) {
+        checkAdmin(session);
+        projectService.deleteParticipant(projectId, userId);
+        return ResponseEntity.ok().build();
+    }
+
     /* ADMIN only endpoints END */
 
     @GetMapping
