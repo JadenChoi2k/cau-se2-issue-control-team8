@@ -154,6 +154,19 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.editIssue(issueId, editRequest, session));
     }
 
+    @PatchMapping("/{projectId}/issue/{issueId}/status")
+    @Operation(summary = "이슈 상태 변경", description = "project leader 이상만 가능.")
+    public ResponseEntity<IssueDTO.Detail> editOneIssueStatus(
+        @PathVariable String projectId, @PathVariable Long issueId, @RequestParam String status, HttpSession session) {
+        checkPL(session);
+        checkProjectAuth(session, projectId);
+        IssueStatus issueStatus = IssueStatus.from(status);
+        if (issueStatus == null) {
+            throw new SimpleError(ErrorCode.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(projectService.changeIssueStatus(issueId, issueStatus, session));
+    }
+
     @PostMapping("/{projectId}/issue/{issueId}/assign/{userId}")
     @Operation(summary = "이슈에 개발자 할당. project leader만 가능.")
     public ResponseEntity<IssueDTO.Detail> assignToIssue(

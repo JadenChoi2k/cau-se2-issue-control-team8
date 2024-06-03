@@ -207,14 +207,11 @@ public class ProjectService {
         return IssueDTO.Detail.from(issue);
     }
 
-//    public IssueDTO.Detail changeIssueStatus(Long issueId, IssueStatus status, HttpSession session) {
-//        Issue issue = findOneIssueAuth(issueId, session);
-//        if (!Utils.getUserAuth(session).getUserRole().hasRole(UserRole.PL)) {
-//            throw new SimpleError(ErrorCode.FORBIDDEN);
-//        }
-//        issue.setStatus(status);
-//        return IssueDTO.Detail.from(issue);
-//    }
+    public IssueDTO.Detail changeIssueStatus(Long issueId, IssueStatus status, HttpSession session) {
+        Issue issue = findOneIssueAuth(issueId, session);
+        issue.setStatus(status);
+        return IssueDTO.Detail.from(issue);
+    }
 
     public IssueDTO.Detail assignDeveloperToIssue(Long issueId, Long userId) {
         Issue issue = issueRepository.findByIssueIdOpt(issueId)

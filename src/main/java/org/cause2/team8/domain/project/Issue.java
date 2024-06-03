@@ -27,6 +27,7 @@ public class Issue {
     @Column(nullable = false, length = 10)
     private IssuePriority priority;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private IssueStatus status = IssueStatus.NEW;
