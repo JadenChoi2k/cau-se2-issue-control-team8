@@ -225,10 +225,6 @@ public class ProjectService {
     public List<UserDTO.Info> recommendDevelopers(String issueId) {
         Issue issue = issueRepository.findByIssueIdOpt(Long.parseLong(issueId))
             .orElseThrow(() -> new SimpleError(ErrorCode.NOT_FOUND));
-        // 이미 할당된 경우
-        if (issue.getAssignee() != null) {
-            throw new SimpleError(ErrorCode.CONFLICT);
-        }
 
         // 추천 방식
         // 1. 해당 프로젝트에 참여 중인 개발자 중 처리 중인 이슈가 적은 순
