@@ -8,6 +8,7 @@ import org.cause2.team8.domain.project.Issue;
 import org.cause2.team8.domain.project.IssueComment;
 import org.cause2.team8.domain.user.User;
 import org.cause2.team8.dto.user.UserDTO;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -37,8 +38,9 @@ public abstract class IssueCommentDTO {
     @RequiredArgsConstructor
     @Schema(name = "IssueCommentRequest")
     public static class Request {
-        @Max(1000)
+        @Length(min = 1, max = 1000)
         private final String content;
+        private final Boolean dummy; // dummy field for resolving message converter error
 
         public IssueComment create(User user, Issue issue) {
             return user.commentToIssue(issue, content);
