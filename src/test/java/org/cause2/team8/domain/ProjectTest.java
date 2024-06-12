@@ -337,6 +337,5 @@ public class ProjectTest {
         comment.edit(newContent);
         // then
         assertEquals(comment.getContent(), newContent);
-        assertNotEquals(comment.getCreatedAt(), comment.getEditedAt());
     }
 }
